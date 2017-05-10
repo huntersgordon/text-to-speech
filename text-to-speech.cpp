@@ -13,12 +13,13 @@ int main(){
 
 
 
-     string voices[9] = {"Maged ","Samantha ", "Karen ", "Daniel ","veena ","Kanya ","victoria ","Alex ", "Sin-ji "};
+     string voices[10] = {"Maged ","Samantha ","Yuri ", "Karen ", "Daniel ","veena ","Kanya ","victoria ","Alex ", "Sin-ji "};
      unsigned voicecounter = 1;
      string voice = voices[0];
      string res = "say -v "+voice;
      string words ="";
      bool spacebarwaspressed = false;
+     bool wordmode = true;
 
 
      struct termios old_tio, new_tio;
@@ -32,13 +33,13 @@ int main(){
 
         tcsetattr(STDIN_FILENO,TCSANOW,&new_tio);
 
-        cout<<"type a normal sentence, spacebar to speak and '*' to quit. '&' to change voices"<<endl;
+        cout<<"type a normal sentence, spacebar to speak and '*' to quit. '&' to change voices.'@' to toggle wordmode"<<endl;
 
 
         do {
              c=getchar();
             // if ((c==' ' && spacebarwaspressed == false) || (c == '\n' && spacebarwaspressed == false)){
-            if ((c==' ' || c == '\n' )&& spacebarwaspressed == false) {
+            if (((c==' ' && (wordmode == true))|| c == '\n' )&& spacebarwaspressed == false) {
                   res = "say -v " + voice + words;
                   system(res.c_str());
                   res = "say -v " + voice;
@@ -50,10 +51,20 @@ int main(){
                    break;
               }
 
+               if (c == '!'){
+
+                    spacebarwaspressed = true;
+
+                    wordmode = (wordmode ==true?"false":"true");
+
+                    cout<<"wordmode off"<<endl;
+
+               }
+
               if (c == '&'){
                    voicecounter++;
 
-                   if (voicecounter == 9) voicecounter = 0;
+                   if (voicecounter == 10) voicecounter = 0;
 
                    spacebarwaspressed = false;
 
@@ -70,12 +81,12 @@ int main(){
                  }
 
 
-             if (c!=' ' && c!='\n' && c != '&') {
+             if (c!=' ' && c!='\n' && c != '&' && c!= '!') {
              spacebarwaspressed = false;
              words += c;
         }
 
-        if (c != '&' && c!= 127)  printf("%c",c);
+        if (c != '&' && c!= 127 && c!= '!')  printf("%c",c);
 
           }
 
